@@ -17,20 +17,30 @@ class CityDict(models.Model):
         verbose_name = u'城市信息'
         verbose_name_plural = verbose_name
 
+    def __unicode__(self):
+        return self.name
+
 
 class CourseOrg(models.Model):
     name = models.CharField(max_length=50, verbose_name=u'机构名称')
     desc = models.TextField(verbose_name=u'机构描述')
+    category = models.CharField(max_length=20, choices=(('jg', u'培训机构'), ('gx', u'高校'), ('gr', '个人')),
+                                verbose_name=u'机构类型', default='jg')
+    address = models.CharField(max_length=150, verbose_name=u'机构地址')
+    city = models.ForeignKey(CityDict, verbose_name=u'所在城市')
     collection_num = models.IntegerField(default=0, verbose_name=u'收藏人数')
     click_num = models.IntegerField(default=0, verbose_name=u'点击人数')
     image = models.ImageField(upload_to='org/%Y/%m', verbose_name=u'机构封面图 ')
-    address = models.CharField(max_length=150, verbose_name=u'机构地址')
-    city = models.ForeignKey(CityDict, verbose_name=u'所在城市')
+    learn_num = models.IntegerField(default=0, verbose_name='学习人数')
+    course_num = models.IntegerField(default=0, verbose_name='机构课程数')
     add_time = models.DateTimeField(datetime.now)
 
     class Meta:
         verbose_name = u'课程机构'
         verbose_name_plural = verbose_name
+
+    def __unicode__(self):
+        return self.name
 
 
 class Teacher(models.Model):
@@ -43,7 +53,12 @@ class Teacher(models.Model):
     collection_num = models.IntegerField(default=0, verbose_name=u'收藏人数')
     click_num = models.IntegerField(default=0, verbose_name=u'点击人数')
     add_time = models.DateTimeField(datetime.now)
+    image = models.ImageField(upload_to='teacher/%Y/%m', verbose_name=u'教师图像',default='')
+
 
     class Meta:
         verbose_name = u'教师信息'
         verbose_name_plural = verbose_name
+
+    def __unicode__(self):
+        return self.name

@@ -1,3 +1,4 @@
+# _*_ coding: utf-8 _*_
 """OnlineEducation URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
@@ -15,11 +16,13 @@ Including another URLconf
     3. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
 """
 from django.conf.urls import url, include
-from django.contrib import admin
+
 from django.views.generic import TemplateView
 import xadmin
+from django.views.static import serve
+from OnlineEducation.settings import MEDIA_ROOT
 
-from users.views import LoginView, RegisterView, ActivateUserView, ForgetPasswordView,ResetView,ModifyPwdView
+from users.views import LoginView, RegisterView, ActivateUserView, ForgetPasswordView, ResetView, ModifyPwdView
 
 urlpatterns = [
     url(r'^xadmin/', xadmin.site.urls),
@@ -31,4 +34,9 @@ urlpatterns = [
     url(r'^forget/$', ForgetPasswordView.as_view(), name='forget'),
     url(r'^reset/(?P<reset_code>.*)/$', ResetView.as_view(), name='reset'),
     url(r'^modify_pwd/$', ModifyPwdView.as_view(), name='modify_pwd'),
+
+    # 课程机构路由
+    url(r'^org/', include('organization.urls', namespace='org')),
+    # 配置上传文件的访问路径
+    url(r'^media/(?P<path>.*)$', serve, {'document_root': MEDIA_ROOT}),
 ]
