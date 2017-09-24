@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
-{% block title %}公开课视频信息  - ymfsder{% endblock %}
+{% block title %} {{ video.name }}  - ymfsder{% endblock %}
 {% block custom_css %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/animate.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/muke/base.css' %}">
@@ -29,9 +29,9 @@
             <div class="crumbs">
                 <ul>
                     <li><a href="index.html">首页</a>></li>
-                    <li><a href="course-list.html">公开课程</a>></li>
-                    <li><a href="course-detail.html">常见网络攻击</a>></li>
-                    <li>12.2 xss攻击与防护</li>
+                    <li><a href="{% url 'course:course_list' %} }">公开课程</a>></li>
+                    <li><a href="{% url 'course:course_detail' course.id %}">{{ course.name }}</a>></li>
+                    <li>{{ video.name }}</li>
                 </ul>
             </div>
         </div>
@@ -72,7 +72,8 @@
                             {% for lesson in course.get_lesson %}
                                 <div class="chapter chapter-active">
                                     <h3>
-                                        <strong><i class="state-expand"></i>{{ lesson.name }}</strong>
+                                        <strong><i class="state-expand"></i>{% url 'course:video_play' video.id %}
+                                        </strong>
                                     </h3>
                                     <ul class="video">
                                         {% for video in lesson.get_video %}
