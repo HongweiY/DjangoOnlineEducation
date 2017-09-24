@@ -14,6 +14,7 @@ from operation.models import UserCollection
 
 class OrgView(View):
     def get(self, request):
+        nav_title = 'organization'
         all_cities = CityDict.objects.all()
         all_courseOrgs = CourseOrg.objects.all()
         # 热门机构
@@ -51,6 +52,7 @@ class OrgView(View):
             'category': category,
             'hot_orgs': hot_orgs,
             'sort': sort,
+            'nav_title': nav_title,
         })
 
 
@@ -104,7 +106,7 @@ class OrgCourseView(View):
             'all_course': all_course,
             'course_org': course_org,
             'current_page': current_page,
-            'is_collection':is_collection,
+            'is_collection': is_collection,
         })
 
 

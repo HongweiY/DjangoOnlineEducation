@@ -42,6 +42,10 @@ class CourseOrg(models.Model):
     def __unicode__(self):
         return self.name
 
+    def get_teacher_nums(self):
+        # 获得教师数量
+        return self.teacher_set.all().count()
+
 
 class Teacher(models.Model):
     org = models.ForeignKey(CourseOrg, verbose_name=u'教师所属机构')
@@ -53,8 +57,7 @@ class Teacher(models.Model):
     collection_num = models.IntegerField(default=0, verbose_name=u'收藏人数')
     click_num = models.IntegerField(default=0, verbose_name=u'点击人数')
     add_time = models.DateTimeField(datetime.now)
-    image = models.ImageField(upload_to='teacher/%Y/%m', verbose_name=u'教师图像',default='')
-
+    image = models.ImageField(upload_to='teacher/%Y/%m', verbose_name=u'教师图像', default='')
 
     class Meta:
         verbose_name = u'教师信息'

@@ -34,6 +34,7 @@ class CourseComment(models.Model):
         verbose_name_plural = verbose_name
 
 
+
 class UserCollection(models.Model):
     user = models.ForeignKey(UserProfile, verbose_name=u'用户')
     collection_id = models.IntegerField(default=0, verbose_name=u'数据id')

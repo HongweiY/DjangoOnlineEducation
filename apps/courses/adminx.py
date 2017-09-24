@@ -13,13 +13,13 @@ class CourseAdmin(object):
 
 
 class LessonAdmin(object):
-    list_display = ['course', 'name', 'add_time']
+    list_display = ['name','course',  'add_time']
     search_fields = ['course', 'name']
     list_filter = ['course__name', 'name', 'add_time']
 
 
 class VideoAdmin(object):
-    list_display = ['lesson', 'name', 'add_time']
+    list_display = ['name','lesson',  'add_time']
     search_fields = ['lesson', 'name']
     list_filter = ['lesson', 'name', 'add_time']
 
