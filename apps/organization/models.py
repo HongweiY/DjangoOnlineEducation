@@ -23,6 +23,7 @@ class CityDict(models.Model):
 
 class CourseOrg(models.Model):
     name = models.CharField(max_length=50, verbose_name=u'机构名称')
+    idea = models.CharField(max_length=30, default='一切为了学生', verbose_name=u'机构理念', )
     desc = models.TextField(verbose_name=u'机构描述')
     category = models.CharField(max_length=20, choices=(('jg', u'培训机构'), ('gx', u'高校'), ('gr', '个人')),
                                 verbose_name=u'机构类型', default='jg')
@@ -33,6 +34,7 @@ class CourseOrg(models.Model):
     image = models.ImageField(upload_to='org/%Y/%m', verbose_name=u'机构封面图 ')
     learn_num = models.IntegerField(default=0, verbose_name='学习人数')
     course_num = models.IntegerField(default=0, verbose_name='机构课程数')
+
     add_time = models.DateTimeField(datetime.now)
 
     class Meta:
@@ -51,6 +53,7 @@ class Teacher(models.Model):
     org = models.ForeignKey(CourseOrg, verbose_name=u'教师所属机构')
     name = models.CharField(max_length=50, verbose_name=u'教师名称')
     work_years = models.IntegerField(default=0, verbose_name=u'工作年限')
+    age = models.IntegerField(default=0, verbose_name=u'年龄')
     work_company = models.CharField(max_length=50, verbose_name=u'就职公司')
     work_position = models.CharField(max_length=50, verbose_name=u'就职公司职位')
     feature = models.CharField(max_length=30, verbose_name=u'教学特点')

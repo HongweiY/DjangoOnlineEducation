@@ -4,9 +4,10 @@ from django.views.generic import View
 from django.http import HttpResponse
 
 from pure_pagination import Paginator, PageNotAnInteger
-from .models import CityDict, CourseOrg
+from .models import CityDict, CourseOrg, Teacher
 from .forms import UserAskForm
 from operation.models import UserCollection
+from courses.models import Course
 
 
 # Create your views here.
@@ -178,3 +179,85 @@ class AddCollectionView(View):
                 return HttpResponse('{"status":"success","msg":"已收藏"}', content_type='application/json')
             else:
                 return HttpResponse('{"status":"fail","msg":"收藏失败"}', content_type='application/json')
+
+
+class TeacherListView(View):
+    """
+    教师列表页
+    """
+
+    def get(self, request):
+        # 导航栏标题
+        nav_title = 'teacher'
+        all_teachers = Teacher.objects.all()
+        sort = request.GET.get('sort', '')
+        if sort:
+            if sort == 'hot':
+                all_teachers = Teacher.objects.order_by('-click_num')
+        # 统计教师数量
+        teacher_num = all_teachers.count()
+        # 分页
+        try:
+            page = request.GET.get('page', 1)
+        except PageNotAnInteger:
+            page = 1
+        # 课程机构进行分页
+        p = Paginator(all_teachers, 5, request=request)
+        all_teachers = p.page(page)
+        # 讲师排行榜，通过点击数量
+        hot_teachers = Teacher.objects.order_by('-click_num')[:4]
+
+        return render(request, 'teachers-list.html', {
+            'nav_title': nav_title,
+            'all_teachers': all_teachers,
+            'teacher_num': teacher_num,
+            'hot_teachers': hot_teachers,
+            'sort': sort
+        })
+
+
+class TeacherDetailView(View):
+    """
+    讲师详情页
+    """
+
+    def get(self, request, teacher_id):
+        nav_title = 'teacher'
+        teacher = Teacher.objects.get(id=int(teacher_id))
+        teacher.click_num += 1
+        teacher.save()
+        # 该讲师的全部课程分页显示
+        all_courses = Course.objects.filter(teacher=teacher)
+        try:
+            page = request.GET.get('page', 1)
+        except PageNotAnInteger:
+            page = 1
+        p = Paginator(all_courses, 4, request=request)
+        all_courses = p.page(page)
+        # 改讲师所属机构
+        course_org = CourseOrg.objects.get(teacher=teacher)
+        # 讲师排行榜，通过点击数量
+        hot_teachers = Teacher.objects.order_by('-click_num')[:4]
+        # 判断教师是否收藏
+        is_teacher_collection = False
+        collection_teacher = UserCollection.objects.filter(user=request.user, collection_type=3,
+                                                           collection_id=teacher.id)
+        if collection_teacher:
+            is_teacher_collection = True
+        # 判断课程机构是否被收藏
+        is_courseOrg_collection = False
+        collection_courseOrg = UserCollection.objects.filter(user=request.user, collection_type=2,
+                                                             collection_id=course_org.id)
+        if collection_courseOrg:
+            is_courseOrg_collection = True
+
+        return render(request, 'teacher-detail.html', {
+            'nav_title': nav_title,
+            'teacher': teacher,
+            'all_courses': all_courses,
+            'course_org': course_org,
+            'hot_teachers': hot_teachers,
+            'is_teacher_collection': is_teacher_collection,
+            'is_courseOrg_collection': is_courseOrg_collection,
+
+        })
