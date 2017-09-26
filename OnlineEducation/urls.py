@@ -22,12 +22,14 @@ import xadmin
 from django.views.static import serve
 from OnlineEducation.settings import MEDIA_ROOT
 
-from users.views import LoginView, RegisterView, ActivateUserView, ForgetPasswordView, ResetView, ModifyPwdView
+from users.views import LoginView, RegisterView, ActivateUserView, ForgetPasswordView, ResetView, ModifyPwdView, \
+    LogoutView
 
 urlpatterns = [
     url(r'^xadmin/', xadmin.site.urls),
     url(r'^$', TemplateView.as_view(template_name='index.html'), name='index'),
     url(r'^login/$', LoginView.as_view(), name='login'),
+    url(r'^logout/$', LogoutView.as_view(), name='logout'),
     url(r'^register/$', RegisterView.as_view(), name='register'),
     url(r'^captcha/', include('captcha.urls')),
     url(r'^activate/(?P<active_code>.*)/$', ActivateUserView.as_view(), name='user_active'),

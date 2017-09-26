@@ -2,12 +2,12 @@
 import json
 
 from django.shortcuts import render
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.hashers import make_password
 from django.db.models import Q
 from django.views.generic.base import View
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from pure_pagination import Paginator, PageNotAnInteger
 from .models import UserProfile, EmailVerifyRecord
 
@@ -51,10 +51,22 @@ class LoginView(View):
             return render(request, 'login.html', {'login_form': login_form})
 
 
+class LogoutView(View):
+    """
+    用户退出登录
+    """
+
+    def get(self, request):
+        logout(request)
+        from django.core.urlresolvers import reverse
+        return HttpResponseRedirect(reverse('index'))
+
+
 # 用户注册
 class RegisterView(View):
     def get(self, request):
         register_form = RegisterForm()
+
         return render(request, 'register.html', {'register_form': register_form})
 
     def post(self, request):
@@ -293,16 +305,20 @@ class UserMessageView(LoginRequiredMixin, View):
 
     def get(self, request):
         all_messages = UserMessage.objects.filter(user=request.user.id)
+
+        all_unread_messages = UserMessage.objects.filter(user=request.user.id, status=False)
+        for all_unread_message in all_unread_messages:
+            all_unread_message.status = True
+            all_unread_message.save()
         # 分页
         try:
             page = request.GET.get('page', 1)
         except PageNotAnInteger:
             page = 1
-        message_num = UserMessage.objects.filter(user=request.user.id, status=False)
         # 课程机构进行分页
         p = Paginator(all_messages, 5, request=request)
         all_messages = p.page(page)
         return render(request, 'usercenter-message.html', {
             'all_messages': all_messages,
-            'message_num': message_num,
+
         })

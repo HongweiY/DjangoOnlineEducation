@@ -24,7 +24,8 @@ class CourseListView(View):
         # 课程搜索
         search_keyword = request.GET.get('keywords', '')
         if search_keyword:
-            all_courses = all_courses.filter(Q(name__icontains=search_keyword)|Q(desc__icontains=search_keyword)|Q(detail__icontains=search_keyword))
+            all_courses = all_courses.filter(Q(name__icontains=search_keyword) | Q(desc__icontains=search_keyword) | Q(
+                detail__icontains=search_keyword))
 
         sort = request.GET.get('sort', '')
         if sort == 'hot':
@@ -84,6 +85,9 @@ class CourseInfoView(LoginRequiredMixin, View):
 
     def get(self, request, course_id):
         course = Course.objects.get(id=int(course_id))
+        # 课程点击量
+        course.students += 1
+        course.save()
         all_resources = CourseResource.objects.filter(course_id=int(course_id))
         # 记录用户学习过得课程
         user_courses = UserCourse.objects.filter(user=request.user, course=course)

@@ -42,13 +42,13 @@
                                 <div class="btn">
                                     <a class="personcenter fl"
                                        href="{% url 'user:user_info' %}">进入个人中心</a>
-                                    <a class="fr" href="/logout/">退出</a>
+                                    <a class="fr" href="{% url 'logout' %}">退出</a>
                                 </div>
                             </div>
                         </div>
                         <a href="{% url 'user:user_message' %}">
-                        <div class="msg-num"><span id="MsgNum">{{ request.user.get_user_message }}</span></div>
-                    </a>
+                            <div class="msg-num"><span id="MsgNum">{{ request.user.get_user_message }}</span></div>
+                        </a>
                     </div>
                 </div>
             {% else %}

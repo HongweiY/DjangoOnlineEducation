@@ -59,7 +59,7 @@ class OrgView(View):
             'category': category,
             'hot_orgs': hot_orgs,
             'sort': sort,
-            'keywords':search_keyword
+            'keywords': search_keyword
         })
 
 
@@ -81,6 +81,8 @@ class OrgHomeView(View):
     def get(self, request, org_id):
         current_page = 'home'
         course_org = CourseOrg.objects.get(id=int(org_id))
+        course_org.click_num += 1
+        course_org.save()
         is_collection = False
         if request.user.is_authenticated():
             if UserCollection.objects.filter(user=request.user, collection_id=course_org.id, collection_type=2):
@@ -173,6 +175,25 @@ class AddCollectionView(View):
         if exit_record:
             # 取消收藏
             exit_record.delete()
+            if int(collection_type) == 1:
+                course = Course.objects.get(id=int(collection_id))
+                course.collection_num -= 1
+                if course.collection_num < 0:
+                    course.collection_num = 0
+                course.save()
+            elif int(collection_type) == 2:
+                course_org = CourseOrg.objects.get(id=int(collection_id))
+                course_org.collection_num -= 1
+                if course_org.collection_num < 0:
+                    course_org.collection_num = 0
+                course_org.save()
+            elif int(collection_type) == 3:
+                teacher = Teacher.objects.get(id=int(collection_id))
+                teacher.collection_num -= 1
+                if teacher.collection_num < 0:
+                    teacher.collection_num = 0
+                teacher.save()
+
             return HttpResponse('{"status":"success","msg":"收藏"}', content_type='application/json')
         else:
             # 保存用户收藏
@@ -182,6 +203,18 @@ class AddCollectionView(View):
                 user_collection.collection_id = int(collection_id)
                 user_collection.collection_type = int(collection_type)
                 user_collection.save()
+                if int(collection_type) == 1:
+                    course = Course.objects.get(id=int(collection_id))
+                    course.collection_num += 1
+                    course.save()
+                elif int(collection_type) == 2:
+                    course_org = CourseOrg.objects.get(id=int(collection_id))
+                    course_org.collection_num += 1
+                    course_org.save()
+                elif int(collection_type) == 3:
+                    teacher = Teacher.objects.get(id=int(collection_id))
+                    teacher.collection_num += 1
+                    teacher.save()
                 return HttpResponse('{"status":"success","msg":"已收藏"}', content_type='application/json')
             else:
                 return HttpResponse('{"status":"fail","msg":"收藏失败"}', content_type='application/json')
@@ -199,7 +232,7 @@ class TeacherListView(View):
         if search_keyword:
             all_teachers = all_teachers.filter(
                 Q(name__icontains=search_keyword) |
-                Q(work_company__icontains=search_keyword)|
+                Q(work_company__icontains=search_keyword) |
                 Q(work_position__icontains=search_keyword))
         sort = request.GET.get('sort', '')
         if sort:
