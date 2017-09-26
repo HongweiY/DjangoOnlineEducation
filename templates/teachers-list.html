@@ -21,13 +21,13 @@
                 <div class="butler_list layout">
                     <div class="head">
                         <ul class="fl tab_header">
-                            <li {% ifequal sort ' ' %} class="active" {% endifequal %} >
-                                <a href="?sort=">
+                            <li {% ifequal sort '' %} class="active" {% endifequal %} >
+                                <a href="?keywords={{ keywords }}&sort=">
                                     全部
                                 </a>
                             </li>
                             <li {% ifequal sort 'hot' %} class="active" {% endifequal %}>
-                                <a href="?sort=hot">
+                                <a href="?keywords={{ keywords }}&sort=hot">
                                     人气 &#8595;
                                 </a>
                             </li>

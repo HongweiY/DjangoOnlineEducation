@@ -8,6 +8,7 @@ from .models import CityDict, CourseOrg, Teacher
 from .forms import UserAskForm
 from operation.models import UserCollection
 from courses.models import Course
+from django.db.models import Q
 
 
 # Create your views here.
@@ -15,9 +16,14 @@ from courses.models import Course
 
 class OrgView(View):
     def get(self, request):
-        nav_title = 'organization'
         all_cities = CityDict.objects.all()
         all_courseOrgs = CourseOrg.objects.all()
+        # 课程机构搜索
+        search_keyword = request.GET.get('keywords', '')
+        if search_keyword:
+            all_courseOrgs = all_courseOrgs.filter(
+                Q(name__icontains=search_keyword) | Q(desc__icontains=search_keyword))
+
         # 热门机构
         hot_orgs = all_courseOrgs.order_by('-click_num')[:3]
         # 取出筛选城市
@@ -53,7 +59,7 @@ class OrgView(View):
             'category': category,
             'hot_orgs': hot_orgs,
             'sort': sort,
-            'nav_title': nav_title,
+            'keywords':search_keyword
         })
 
 
@@ -187,13 +193,19 @@ class TeacherListView(View):
     """
 
     def get(self, request):
-        # 导航栏标题
-        nav_title = 'teacher'
         all_teachers = Teacher.objects.all()
+        # 教师搜索
+        search_keyword = request.GET.get('keywords', '')
+        if search_keyword:
+            all_teachers = all_teachers.filter(
+                Q(name__icontains=search_keyword) |
+                Q(work_company__icontains=search_keyword)|
+                Q(work_position__icontains=search_keyword))
         sort = request.GET.get('sort', '')
         if sort:
             if sort == 'hot':
-                all_teachers = Teacher.objects.order_by('-click_num')
+                all_teachers = all_teachers.order_by('-click_num')
+
         # 统计教师数量
         teacher_num = all_teachers.count()
         # 分页
@@ -208,11 +220,11 @@ class TeacherListView(View):
         hot_teachers = Teacher.objects.order_by('-click_num')[:4]
 
         return render(request, 'teachers-list.html', {
-            'nav_title': nav_title,
             'all_teachers': all_teachers,
             'teacher_num': teacher_num,
             'hot_teachers': hot_teachers,
-            'sort': sort
+            'sort': sort,
+            'keywords': search_keyword,
         })
 
 
@@ -222,7 +234,6 @@ class TeacherDetailView(View):
     """
 
     def get(self, request, teacher_id):
-        nav_title = 'teacher'
         teacher = Teacher.objects.get(id=int(teacher_id))
         teacher.click_num += 1
         teacher.save()
@@ -252,7 +263,6 @@ class TeacherDetailView(View):
             is_courseOrg_collection = True
 
         return render(request, 'teacher-detail.html', {
-            'nav_title': nav_title,
             'teacher': teacher,
             'all_courses': all_courses,
             'course_org': course_org,

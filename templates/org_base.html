@@ -19,7 +19,6 @@
 <section class="headerwrap headerwrap2">
     <header>
         <div class="header2 header">
-
             {% if request.user.is_authenticated %}
                 <div class="top">
                     <div class="wp">
@@ -47,6 +46,9 @@
                                 </div>
                             </div>
                         </div>
+                        <a href="{% url 'user:user_message' %}">
+                            <div class="msg-num"><span id="MsgNum">{{ request.user.get_user_message }}</span></div>
+                        </a>
                     </div>
                 </div>
             {% else %}

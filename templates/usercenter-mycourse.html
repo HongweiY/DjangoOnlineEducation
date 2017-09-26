@@ -1,0 +1,37 @@
+{% extends 'usercenter_base.html' %}
+{% load staticfiles %}
+{% block title %}我的课程- ymfsder{% endblock %}
+{% block custom_bread %}我的课程 {% endblock %}
+
+{% block content %}
+    <div class="right">
+        <div class="personal_des Releasecont">
+            <div class="head">
+                <h1>我的课程</h1>
+            </div>
+        </div>
+        <div class="personal_des permessage">
+            <div class="companycenter">
+                <div class="group_list brief">
+                    {% for user_course in user_courses %}
+                        <div class="module1_5 box">
+                            <a href="course-detail.html">
+                                <img width="214" height="190" class="scrollLoading"
+                                     src="{{ MEDIA_URL }}{{ user_course.course.image }}"/>
+                            </a>
+                            <div class="des">
+                                <a href="course-detail.html"><h2>{{ user_course.course.name }}</h2></a>
+                                <span class="fl">课时：<i class="key">{{ user_course.course.learn_times }}</i></span>
+                                <span class="fr">学习人数：{{ user_course.course.students }}</span>
+                            </div>
+                            <div class="bottom">
+                                <span class="fl">{{ user_course.course.course_org.name }}</span>
+                                <span class="star fr  notlogin" data-favid="15">{{ user_course.course.collection_num }}</span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

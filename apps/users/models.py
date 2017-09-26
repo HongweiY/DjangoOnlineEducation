@@ -25,11 +25,16 @@ class UserProfile(AbstractUser):
     def __unicode__(self):
         return self.username
 
+    def get_user_message(self):
+        from operation.models import UserMessage
+        return UserMessage.objects.filter(user=self.id, status=False).count()
+
 
 class EmailVerifyRecord(models.Model):
     code = models.CharField(max_length=20, verbose_name=u'验证码')
     email = models.EmailField(max_length=50, verbose_name=u'邮箱')
-    send_type = models.CharField(max_length=10, choices=(('register', u'注册'), ('forget', u'找回密码')),
+    send_type = models.CharField(max_length=20,
+                                 choices=(('register', u'注册'), ('forget', u'找回密码'), ('update_email', u'修改邮箱')),
                                  verbose_name=u'验证类型')
     send_time = models.DateTimeField(default=datetime.now, verbose_name=u'发送的时间')
 

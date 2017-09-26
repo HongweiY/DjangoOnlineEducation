@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from operation.models import UserCollection, CourseComment, UserCourse
 from .models import Course, CourseResource, Video
 from utils.mixin_utils import LoginRequiredMixin
+from django.db.models import Q
 
 
 # Create your views here.
@@ -17,10 +18,14 @@ class CourseListView(View):
     """
 
     def get(self, request):
-        nav_title = 'course'
         all_courses = Course.objects.all().order_by('-add_time')
         # 热门课程
         hot_courses = all_courses.order_by('-students')[:3]
+        # 课程搜索
+        search_keyword = request.GET.get('keywords', '')
+        if search_keyword:
+            all_courses = all_courses.filter(Q(name__icontains=search_keyword)|Q(desc__icontains=search_keyword)|Q(detail__icontains=search_keyword))
+
         sort = request.GET.get('sort', '')
         if sort == 'hot':
             all_courses = all_courses.order_by('-click_num')
@@ -36,7 +41,6 @@ class CourseListView(View):
         return render(request, 'course-list.html', {
             'all_courses': courses,
             'sort': sort,
-            'nav_title': nav_title,
             'hot_courses': hot_courses,
         })
 
