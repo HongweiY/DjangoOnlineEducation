@@ -9,7 +9,7 @@ from django.db.models import Q
 from django.views.generic.base import View
 from django.http import HttpResponse, HttpResponseRedirect
 from pure_pagination import Paginator, PageNotAnInteger
-from .models import UserProfile, EmailVerifyRecord
+from .models import UserProfile, EmailVerifyRecord, Banner
 
 from .forms import LoginForm, RegisterForm, ForgetPwdForm, ResetForm, UploadImageForm, UserInfoForm
 from utils.email_send import send_register_email
@@ -42,7 +42,8 @@ class LoginView(View):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    return render(request, 'index.html')
+                    from django.core.urlresolvers import reverse
+                    return HttpResponseRedirect(reverse('index'))
                 else:
                     return render(request, 'login.html', {'msg': u' 用户暂未激活'})
             else:
@@ -322,3 +323,38 @@ class UserMessageView(LoginRequiredMixin, View):
             'all_messages': all_messages,
 
         })
+
+
+class IndexView(View):
+    """
+    系统首页的配置
+    """
+
+    def get(self, request):
+        banners = Banner.objects.all().order_by('index')
+        courses = Course.objects.filter(is_banner=False)[:6]
+        banner_courses = Course.objects.filter(is_banner=True)[:3]
+        course_orgs = CourseOrg.objects.all().order_by('-click_num')[:15]
+        return render(request, 'index.html', {
+            'banners': banners,
+            'courses': courses,
+            'banner_courses': banner_courses,
+            'course_orgs': course_orgs,
+
+        })
+
+
+# 404错误配置
+def page_not_found(request):
+    from django.shortcuts import render_to_response
+    response = render_to_response('404.html', {})
+    response.status_code = 404
+    return response
+
+
+# 服务器异常页面配置
+def page_error(request):
+    from django.shortcuts import render_to_response
+    response = render_to_response('500.html', {})
+    response.status_code = 500
+    return response

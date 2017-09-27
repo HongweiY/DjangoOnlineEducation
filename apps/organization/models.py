@@ -27,6 +27,7 @@ class CourseOrg(models.Model):
     desc = models.TextField(verbose_name=u'机构描述')
     category = models.CharField(max_length=20, choices=(('jg', u'培训机构'), ('gx', u'高校'), ('gr', '个人')),
                                 verbose_name=u'机构类型', default='jg')
+    tag=models.CharField(max_length=30, default='全国知名办学机构', verbose_name=u'机构标签', )
     address = models.CharField(max_length=150, verbose_name=u'机构地址')
     city = models.ForeignKey(CityDict, verbose_name=u'所在城市')
     collection_num = models.IntegerField(default=0, verbose_name=u'收藏人数')

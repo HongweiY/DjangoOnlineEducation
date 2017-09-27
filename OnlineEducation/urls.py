@@ -17,17 +17,17 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 
-from django.views.generic import TemplateView
 import xadmin
 from django.views.static import serve
-from OnlineEducation.settings import MEDIA_ROOT
+from OnlineEducation.settings import MEDIA_ROOT,STATIC_ROOT
 
 from users.views import LoginView, RegisterView, ActivateUserView, ForgetPasswordView, ResetView, ModifyPwdView, \
     LogoutView
+from users.views import IndexView
 
 urlpatterns = [
     url(r'^xadmin/', xadmin.site.urls),
-    url(r'^$', TemplateView.as_view(template_name='index.html'), name='index'),
+    url(r'^index/', IndexView.as_view(), name='index'),
     url(r'^login/$', LoginView.as_view(), name='login'),
     url(r'^logout/$', LogoutView.as_view(), name='logout'),
     url(r'^register/$', RegisterView.as_view(), name='register'),
@@ -45,4 +45,9 @@ urlpatterns = [
     url(r'^user/', include('users.urls', namespace='user')),
     # 配置上传文件的访问路径
     url(r'^media/(?P<path>.*)$', serve, {'document_root': MEDIA_ROOT}),
+
+    url(r'^static/(?P<path>.*)$', serve, {'document_root': STATIC_ROOT}),
 ]
+# 全局404
+handler404 = 'users.views.page_not_found'
+handler500 = 'users.views.page_error'

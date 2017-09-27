@@ -85,7 +85,7 @@
                 <div class="nav">
                     <div class="wp">
                         <ul>
-                            <li><a class="{% if request.path == '/' %}active{% endif %}" href="/">首页</a></li>
+                            <li><a class="{% if request.path == '/' %}active{% endif %}" href="{% url 'index' %}">首页</a></li>
                             <li>
                                 <a class="{% if request.path|slice:'7' == '/course' %}active{% endif %}"
                                    href="{% url 'course:course_list' %}">

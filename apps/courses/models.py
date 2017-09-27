@@ -32,6 +32,7 @@ class Course(models.Model):
     need_kno = models.CharField(max_length=300, verbose_name=u'课程须知', default='我知道你全都知道')
     what_learn = models.CharField(max_length=300, verbose_name=u'你能学到什么', default='能学到什么，你知道还不清楚吗？')
     tag = models.CharField(max_length=10, verbose_name=u'课程标签', default='')
+    is_banner = models.BooleanField(default=False, verbose_name='是否是推荐课程')
     add_time = models.DateTimeField(default=datetime.now)
 
     def __unicode__(self):
