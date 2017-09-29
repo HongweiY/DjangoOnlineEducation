@@ -7,6 +7,8 @@ from datetime import datetime
 
 from organization.models import CourseOrg, Teacher
 
+from DjangoUeditor.models import UEditorField
+
 
 # Create your models here.
 
@@ -19,7 +21,9 @@ class Course(models.Model):
                                 choices=(
                                     ('1', u'前端开发'), ('2', u'后端开发'), ('3', u'移动开发'), ('4', u'数据库'), ('5', u'运维&测试')), )
     desc = models.CharField(max_length=100, verbose_name=u'课程描述')
-    detail = models.TextField(verbose_name=u'课程详情')
+    detail = UEditorField(verbose_name=u'详情', width=1200, height=600, imagePath="course/ueditor/",
+                          filePath="course/ueditor/",
+                          default='')
     degree = models.CharField(max_length=6, choices=(('low', u'初级'), ('mid', u'中级'), ('high', u'高级')),
                               verbose_name='难度')
     learn_times = models.IntegerField(default=0, verbose_name=u'学习时长单位分钟')
@@ -46,6 +50,8 @@ class Course(models.Model):
         # 获得课程章节数
         return self.lesson_set.all().count()
 
+    get_zj_nums.short_description = '章节数'
+
     def get_learn_users(self):
         # 获取课程学习人数
         return self.usercourse_set.all()[:5]
@@ -53,6 +59,13 @@ class Course(models.Model):
     def get_lesson(self):
         # 获得全部在章节
         return self.lesson_set.all()
+
+
+class BannerCourse(Course):
+    class Meta:
+        verbose_name = '轮播课程'
+        verbose_name_plural = verbose_name
+        proxy = True
 
 
 class Lesson(models.Model):

@@ -19,7 +19,7 @@ from django.conf.urls import url, include
 
 import xadmin
 from django.views.static import serve
-from OnlineEducation.settings import MEDIA_ROOT,STATIC_ROOT
+from OnlineEducation.settings import MEDIA_ROOT
 
 from users.views import LoginView, RegisterView, ActivateUserView, ForgetPasswordView, ResetView, ModifyPwdView, \
     LogoutView
@@ -45,8 +45,10 @@ urlpatterns = [
     url(r'^user/', include('users.urls', namespace='user')),
     # 配置上传文件的访问路径
     url(r'^media/(?P<path>.*)$', serve, {'document_root': MEDIA_ROOT}),
+    # 富文本相关
+    url(r'^ueditor/', include('DjangoUeditor.urls')),
 
-    url(r'^static/(?P<path>.*)$', serve, {'document_root': STATIC_ROOT}),
+    # url(r'^static/(?P<path>.*)$', serve, {'document_root': STATIC_ROOT}),
 ]
 # 全局404
 handler404 = 'users.views.page_not_found'
