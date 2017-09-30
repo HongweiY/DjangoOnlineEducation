@@ -22,7 +22,7 @@ class UserProfile(AbstractUser):
         verbose_name = u'用户信息表'
         verbose_name_plural = verbose_name
 
-    def __unicode__(self):
+    def __str__(self):
         return self.username
 
     def get_user_message(self):
@@ -42,7 +42,7 @@ class EmailVerifyRecord(models.Model):
         verbose_name = u'邮箱验证码'
         verbose_name_plural = verbose_name
 
-    def __unicode__(self):
+    def __str__(self):
         return ' {0}({1})'.format(self.code, self.email)
 
 

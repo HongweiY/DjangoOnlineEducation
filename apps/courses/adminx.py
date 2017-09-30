@@ -19,6 +19,7 @@ class CourseAdmin(object):
     list_editable = ['detail', 'degree']
     style_fields = {'detail': 'ueditor'}
     import_excel = True
+    model_icon = 'fa fa-book'
 
     # exclude = ['click_num', 'collection_num']
 
@@ -51,6 +52,7 @@ class BannerCourseAdmin(object):
                    'click_num']
     ordering = ['-click_num']
     readonly_fields = ['click_num', 'collection_num']
+    model_icon='fa fa-fast-forward'
 
     # exclude = ['click_num', 'collection_num']
 
@@ -64,18 +66,21 @@ class LessonAdmin(object):
     list_display = ['name', 'course', 'add_time']
     search_fields = ['course', 'name']
     list_filter = ['course__name', 'name', 'add_time']
+    model_icon = 'fa fa-film'
 
 
 class VideoAdmin(object):
     list_display = ['name', 'lesson', 'add_time']
     search_fields = ['lesson', 'name']
     list_filter = ['lesson', 'name', 'add_time']
+    model_icon='fa fa-video-camera'
 
 
 class CourseResourceAdmin(object):
     list_display = ['course', 'name', 'download', 'add_time']
     search_fields = ['course', 'name', 'download']
     list_filter = ['course', 'name', 'download', 'add_time']
+    model_icon = 'fa fa-folder-open-o'
 
 
 xadmin.site.register(Course, CourseAdmin)

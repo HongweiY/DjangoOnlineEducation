@@ -19,7 +19,7 @@ class UserAsk(models.Model):
     add_time = models.DateTimeField(default=datetime.now)
 
     class Meta:
-        verbose_name = u'用户质询'
+        verbose_name = u'用户咨询'
         verbose_name_plural = verbose_name
 
 

@@ -39,7 +39,7 @@ class Course(models.Model):
     is_banner = models.BooleanField(default=False, verbose_name='是否是推荐课程')
     add_time = models.DateTimeField(default=datetime.now)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:
@@ -77,7 +77,7 @@ class Lesson(models.Model):
         verbose_name = u'章节信息'
         verbose_name_plural = verbose_name
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def get_video(self):
@@ -96,7 +96,7 @@ class Video(models.Model):
         verbose_name = u'视频信息'
         verbose_name_plural = verbose_name
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -110,5 +110,5 @@ class CourseResource(models.Model):
         verbose_name = u'课程资源信息'
         verbose_name_plural = verbose_name
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
